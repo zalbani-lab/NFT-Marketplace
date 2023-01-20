@@ -7,7 +7,7 @@ import './styles/App.css';
 const OPENSEA_LINK = '';
 const TOTAL_MINT_COUNT = 50;
 
-const CONTRACT_ADDRESS = "0xE324D36201550A5B1dB756cA0f104E8028817fBD";
+const CONTRACT_ADDRESS = "0x0982f5F1c369149D1b66E7e56C24D2674F0Cf164";
 
 const App = () => {
 
@@ -104,32 +104,49 @@ const App = () => {
       console.log(error)
     }
   }
-
-    const askContractToMintNft = async () => {
+  
+  const askContractToMintNft = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
     
-      try {
-        const { ethereum } = window;
+        console.log("Going to pop wallet now to pay gas...")
+        let nftTxn = await connectedContract.makeAnEpicNFT();
     
-        if (ethereum) {
-          const provider = new ethers.providers.Web3Provider(ethereum);
-          const signer = provider.getSigner();
-          const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
-    
-          console.log("Going to pop wallet now to pay gas...")
-          let nftTxn = await connectedContract.makeAnEpicNFT();
-    
-          console.log("Mining...please wait.")
-          await nftTxn.wait();
+        console.log("Mining...please wait.")
+        await nftTxn.wait();
           
-          console.log(`Mined, see transaction: https://goerli.etherscan.io/tx/${nftTxn.hash}`);
-    
-        } else {
-          console.log("Ethereum object doesn't exist!");
-        }
-      } catch (error) {
-        console.log(error)
+        console.log(`Mined, see transaction: https://goerli.etherscan.io/tx/${nftTxn.hash}`);
+      } else {
+        console.log("Ethereum object doesn't exist!");
       }
+    } catch (error) {
+      console.log(error)
     }
+  }
+
+  const getNumberOfMintedNFT = async () => {
+    try {
+      const { ethereum } = window;
+      if (ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const connectedContract = new ethers.Contract(CONTRACT_ADDRESS, myEpicNft.abi, signer);
+    
+        let numberOfMintedNFT = await connectedContract.getTotalNFTsMintedSoFar();
+        console.table(numberOfMintedNFT);
+          
+        
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   // Render Methods
   const renderNotConnectedContainer = () => (
@@ -144,6 +161,12 @@ const App = () => {
    </button>
   );
 
+  const getNumberOfNFTMintedButton = () => (
+    <button onClick={getNumberOfMintedNFT} className="cta-button connect-wallet-button">
+      Get number of Mint NFT
+    </button>
+   );
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -157,6 +180,7 @@ const App = () => {
             Each unique. Each beautiful. Discover your NFT today.
           </p>
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintButton()}
+          {getNumberOfNFTMintedButton()}
         </div>
       </div>
     </div>
