@@ -7,7 +7,7 @@ import './styles/App.css';
 const OPENSEA_LINK = '';
 const TOTAL_MINT_COUNT = 50;
 
-const CONTRACT_ADDRESS = "0x0982f5F1c369149D1b66E7e56C24D2674F0Cf164";
+const CONTRACT_ADDRESS = "0xFEBb5026C0c37e12Bb85748bF0ddf0Dfc094224A";
 
 const App = () => {
 
@@ -44,7 +44,19 @@ const App = () => {
     } else {
       console.log("No authorized account found");
     }
+    checkIfIsConnectedToTheRightChain(ethereum);
     setupEventListener();
+  }
+
+  const checkIfIsConnectedToTheRightChain = async (ethereum) => {
+    let chainId = await ethereum.request({ method: 'eth_chainId' });
+    console.log("Connected to chain " + chainId);
+
+    // String, hex code of the chainId of the Goerli test network
+    const goerliChainId = "0x5"; 
+    if (chainId !== goerliChainId) {
+	    alert("You are not connected to the Goerli Test Network!");
+    }
   }
   
   /*
