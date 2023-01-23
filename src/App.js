@@ -7,7 +7,7 @@ import './styles/App.css';
 const OPENSEA_LINK = '';
 const TOTAL_MINT_COUNT = 50;
 
-const CONTRACT_ADDRESS = "0xFEBb5026C0c37e12Bb85748bF0ddf0Dfc094224A";
+const CONTRACT_ADDRESS = "0x174136d234a73B32D25a2A42860DFe4fF748Ee79";
 
 const App = () => {
 
@@ -15,6 +15,7 @@ const App = () => {
   * Just a state variable we use to store our user's public wallet. Don't forget to import useState.
   */
   const [currentAccount, setCurrentAccount] = useState("");
+  const [isMinting, setIsMinting] = useState("");
   
   /*
   * Gotta make sure this is async.
@@ -127,11 +128,12 @@ const App = () => {
     
         console.log("Going to pop wallet now to pay gas...")
         let nftTxn = await connectedContract.makeAnEpicNFT();
-    
+        setIsMinting(true);
         console.log("Mining...please wait.")
         await nftTxn.wait();
           
         console.log(`Mined, see transaction: https://goerli.etherscan.io/tx/${nftTxn.hash}`);
+        setIsMinting(false);
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -150,8 +152,6 @@ const App = () => {
     
         let numberOfMintedNFT = await connectedContract.getTotalNFTsMintedSoFar();
         console.table(numberOfMintedNFT);
-          
-        
       } else {
         console.log("Ethereum object doesn't exist!");
       }
@@ -179,6 +179,13 @@ const App = () => {
     </button>
    );
 
+   const mintingGif = () => (
+    <React.Fragment>
+      <img src="./mining.gif"/>
+      <p>Mining in process</p>
+    </React.Fragment>
+   );
+
   useEffect(() => {
     checkIfWalletIsConnected();
   }, [])
@@ -193,6 +200,8 @@ const App = () => {
           </p>
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintButton()}
           {getNumberOfNFTMintedButton()}
+          {isMinting === true ? mintingGif() : null}
+          
         </div>
       </div>
     </div>
