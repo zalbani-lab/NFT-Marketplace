@@ -180,24 +180,24 @@ const App = () => {
 
    const mintingGif = () => (
     <React.Fragment>
-      <img src="./mining.gif"/>
+      <img src="./mining.gif" alt=''/>
       <p>Mining in process</p>
     </React.Fragment>
    );
 
   useEffect(() => {
     checkIfWalletIsConnected();
-  }, [])
+  })
 
   return (
      <div className="App">
       <div className="container">
         <div className="header-container">
-          <p className="header gradient-text">My NFT Collection</p>
+          <p className="header gradient-text">My NFT Collection {TOTAL_MINT_COUNT}</p>
           <p className="sub-text">
             Each unique. Each beautiful. Discover your NFT today.
           </p>
-          <a href={OPENSEA_LINK} target='_blank'>See on open sea</a>
+          <a href={OPENSEA_LINK} target='_blank' rel='noreferrer'>See on open sea</a>
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintButton()}
           {getNumberOfNFTMintedButton()}
           {isMinting === true ? mintingGif() : null}
