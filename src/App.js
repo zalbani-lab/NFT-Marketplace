@@ -4,10 +4,9 @@ import myEpicNft from './utils/MyEpicNFT.json'
 import './styles/App.css';
 
 // Constants
-const OPENSEA_LINK = '';
-const TOTAL_MINT_COUNT = 50;
-
 const CONTRACT_ADDRESS = "0x174136d234a73B32D25a2A42860DFe4fF748Ee79";
+const OPENSEA_LINK = `https://testnets.opensea.io/assets/goerli/${CONTRACT_ADDRESS}`;
+const TOTAL_MINT_COUNT = 50;
 
 const App = () => {
 
@@ -198,6 +197,7 @@ const App = () => {
           <p className="sub-text">
             Each unique. Each beautiful. Discover your NFT today.
           </p>
+          <a href={OPENSEA_LINK} target='_blank'>See on open sea</a>
           {currentAccount === "" ? renderNotConnectedContainer() : renderMintButton()}
           {getNumberOfNFTMintedButton()}
           {isMinting === true ? mintingGif() : null}
